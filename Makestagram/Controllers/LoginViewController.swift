@@ -49,14 +49,15 @@ class LoginViewController: UIViewController {
 
 }
 extension LoginViewController: FUIAuthDelegate {
-    func authUI(_ authUI: FUIAuth, didSignInWith user: FIRUser?, error: Error?) {
-        if let error = error {
-            assertionFailure("Error signing in: \(error.localizedDescription)")
-            return
-        }
-        print("handle user signup / login")
-    }
+//    func authUI(_ authUI: FUIAuth, didSignInWith user: FIRUser?, error: Error?) {
+//        if let error = error {
+//            assertionFailure("Error signing in: \(error.localizedDescription)")
+//            return
+//        }
+//        print("handle user signup / login")
+//    }
     func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?){
+        
         if let error = error {
             assertionFailure("Error signing in: \(error.localizedDescription)")
             return
@@ -72,12 +73,38 @@ extension LoginViewController: FUIAuthDelegate {
 //                print("New user!")
 //            }
 //        })
+//        userRef.observeSingleEvent(of: .value, with: { [unowned self] (snapshot) in
+//            if let user = User(snapshot: snapshot) {
+//                print("Welcome back, \(user.username).")
+//            } else {
+//                self.performSegue(withIdentifier: "toCreateUsername", sender: self)
+//            }
+//        })
+//        userRef.observeSingleEvent(of: .value, with: { [unowned self] (snapshot) in
+//            if let user = User(snapshot: snapshot) {
+//                User.setCurrent(user)
+//                let storyboard = UIStoryboard(name: "Main", bundle: .main)
+//
+//                if let initialViewController = storyboard.instantiateInitialViewController() {
+//                    self.view.window?.rootViewController = initialViewController
+//                    self.view.window?.makeKeyAndVisible()
+//                }
+//            } else {
+//                self.performSegue(withIdentifier: "toCreateUsername", sender: self)
+//            }
+//        })
         userRef.observeSingleEvent(of: .value, with: { [unowned self] (snapshot) in
-            if let user = User(snapshot: snapshot) {
-                print("Welcome back, \(user.username).")
+            if let user = User (snapshot: snapshot){
+                User.setCurrent(user)
+                
+                let storyboard = UIStoryboard(name: "Main", bundle: .main)
+                if let initialViewController = storyboard.instantiateInitialViewController() {
+                    self.view.window?.rootViewController = initialViewController
+                    //self.view.window?.makeKeyAndVisible()
+                }
             } else {
-                self.performSegue(withIdentifier: "toCreateUsername", sender: self)
-            }
-        })
-    }
+                self.performSegue(withIdentifier: Constants.Segue.toCreateUsername, sender: self)
+                }
+                })
+          }
 }
